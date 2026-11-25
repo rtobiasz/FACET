@@ -7,6 +7,17 @@
   <meta name="description" content="FACET fits a single image with movable planar neural components that support geometric editing, simulation, and ray-traced 3D composition.">
   <meta property="og:title" content="FACET — Ray-Traceable Local Implicit Neural Representations for Editable Images">
   <meta property="og:description" content="From a single image to editable, ray-traceable geometry.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rtobiasz.github.io/FACET/">
+  <meta property="og:image" content="https://rtobiasz.github.io/FACET/assets/social_card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A fitted photo of Venice with its planar components shown in a magnifier and a ray-traced glass sphere.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FACET: Ray-Traceable Local Implicit Neural Representations for Editable Images">
+  <meta name="twitter:description" content="From a single image to editable, ray-traceable geometry.">
+  <meta name="twitter:image" content="https://rtobiasz.github.io/FACET/assets/social_card.jpg">
+  <link rel="canonical" href="https://rtobiasz.github.io/FACET/">
   <title>FACET — Ray-Traceable Local Implicit Neural Representations for Editable Images</title>
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="stylesheet" href="style.css">
@@ -22,6 +33,7 @@
       <a href="#method">Method</a>
       <a href="#applications">Applications</a>
       <a href="#results">Results</a>
+      <a href="#citation">Citation</a>
     </nav>
     <a class="nav-code" href="https://github.com/rtobiasz/FACET">GitHub</a>
   </header>
@@ -55,9 +67,16 @@
           <span class="pill unavailable">arXiv <small>Coming soon</small></span>
           <a class="pill primary" href="https://github.com/rtobiasz/FACET">Code <small>GitHub</small></a>
           <a class="pill" href="#project-video">Video <small>Method</small></a>
+          <a class="pill" href="#citation">BibTeX <small>Cite</small></a>
         </div>
       </div>
       <button id="hero-motion" type="button" hidden>Pause animation</button>
+      <figure class="hero-teaser">
+        <a href="assets/teaser.webp" aria-label="Open the full-size teaser image">
+          <img src="assets/teaser.webp" srcset="assets/teaser_1200.webp 1200w, assets/teaser.webp 2400w" sizes="(max-width: 1400px) 92vw, 1320px" width="2400" height="800" fetchpriority="high" alt="A single photo of Venice fitted with FACET: the components are lifted into depth, the right half is restyled as The Starry Night, and a glass sphere and a mirror are ray-traced into the scene.">
+        </a>
+        <figcaption>One fitted photo, lifted into depth and partly restyled. The magnifier shows the fitted components; the glass sphere and the mirror are ray-traced against the same components.</figcaption>
+      </figure>
     </section>
     <section class="section" id="overview" aria-labelledby="overview-title">
       <p class="section-label">Overview</p>
@@ -68,8 +87,13 @@
       </div>
       <section class="project-video" id="project-video" aria-labelledby="project-video-title">
         <h3 id="project-video-title">Method video</h3>
-        <iframe data-src="https://www.youtube-nocookie.com/embed/BQYnGjL5MgU" title="FACET method video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
-        <a href="https://www.youtube.com/watch?v=BQYnGjL5MgU">Watch on YouTube</a>
+        <div class="video-frame" data-video="BQYnGjL5MgU">
+          <a class="video-poster" href="https://www.youtube.com/watch?v=BQYnGjL5MgU" aria-label="Play the FACET method video">
+            <img src="assets/video_poster.webp" width="1280" height="720" loading="lazy" alt="">
+            <span class="play-icon" aria-hidden="true"></span>
+          </a>
+        </div>
+        <a class="video-link" href="https://www.youtube.com/watch?v=BQYnGjL5MgU">Watch on YouTube</a>
       </section>
       <section class="behind-teaser" aria-labelledby="teaser-title">
         <p class="section-label">Behind the teaser</p>
@@ -359,7 +383,22 @@
     <section class="section" id="abstract" aria-labelledby="abstract-title">
       <div class="section-heading">
         <h2 id="abstract-title">Abstract</h2>
-        <p>FACET is an editable image representation that pairs oriented planar components with continuous neural appearance. A decoder shared across components predicts color and opacity from local coordinates and compact descriptors. Basing appearance in each component’s frame lets detail move with the surface through planar edits, mesh-driven simulation, and depth-guided lifting. The lifted components can be queried by reflected and refracted rays alongside conventional mesh objects. On Kodak-24 and DIV2K-100, FACET improves reconstruction quality and reduces inference size compared with the evaluated editing-oriented baselines. Controlled edits and novel views further demonstrate appearance preservation.</p>
+        <p>Implicit neural representations (INRs) encode images compactly as continuous functions, but they expose no surfaces that could be moved, lifted to 3D, or lit. Gaussian-based representations expose such surfaces. Some fix appearance to each primitive, so detail costs many primitives or memory. Others compute it from neighboring primitives, so edits change the appearance. Existing image representations cannot at once be deformed by hand or by physics simulation, be lifted into 3D, and be placed in a scene with added lights, mirrors, and glass, while keeping their fitted appearance. We introduce FACET, an editable representation that brings 3D scene interactions to a single image. FACET couples oriented planar components with continuous local neural appearance. A shared decoder predicts color and opacity from local coordinates and compact component descriptors, allowing fitted detail to follow geometry without per-component texture maps. Planar editing, mesh-driven simulation, depth-guided lifting, and ray tracing with reflection and refraction reuse the fitted appearance without retraining. Experiments on Kodak-24 and DIV2K-100 demonstrate higher reconstruction quality and smaller inference models than the evaluated editing-oriented baselines. Controlled editing and lifting experiments further demonstrate improved appearance preservation.</p>
+      </div>
+    </section>
+    <section class="section" id="citation" aria-labelledby="citation-title">
+      <div class="section-heading">
+        <h2 id="citation-title">Citation</h2>
+        <div class="bibtex">
+          <button class="copy-bibtex" type="button" hidden>Copy</button>
+          <pre><code id="bibtex-code">@article{tobiasz2026facet,
+  title   = {{FACET}: Ray-Traceable Local Implicit Neural Representations for Editable Images},
+  author  = {Tobiasz, Rafa{\l} and Wilczy{\'n}ski, Grzegorz and Zieli{\'n}ski, Miko{\l}aj and Byrski, Krzysztof and Belter, Dominik and Spurek, Przemys{\l}aw},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/XXXX.XXXXX}
+}</code></pre>
+        </div>
       </div>
     </section>
   </main>

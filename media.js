@@ -1,8 +1,32 @@
-// A file:// preview cannot identify the embedding page to YouTube.
-if (location.protocol === 'http:' || location.protocol === 'https:') {
-  const player = document.querySelector('#project-video iframe[data-src]');
-  player.src = player.dataset.src;
-  player.hidden = false;
+// The method video shows a local poster and loads the YouTube player only on click.
+// A file:// preview cannot identify the embedding page to YouTube, so it keeps the plain link.
+const videoFrame = document.querySelector('#project-video .video-frame');
+if (videoFrame && (location.protocol === 'http:' || location.protocol === 'https:')) {
+  videoFrame.querySelector('.video-poster').addEventListener('click', event => {
+    event.preventDefault();
+    const player = document.createElement('iframe');
+    player.src = 'https://www.youtube-nocookie.com/embed/' + videoFrame.dataset.video + '?autoplay=1&rel=0';
+    player.title = 'FACET method video';
+    player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    player.referrerPolicy = 'strict-origin-when-cross-origin';
+    player.allowFullscreen = true;
+    videoFrame.replaceChildren(player);
+    player.focus();
+  });
+}
+
+const copyButton = document.querySelector('.copy-bibtex');
+if (copyButton && navigator.clipboard) {
+  copyButton.hidden = false;
+  copyButton.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(document.querySelector('#bibtex-code').textContent);
+      copyButton.textContent = 'Copied';
+    } catch {
+      copyButton.textContent = 'Copy failed';
+    }
+    setTimeout(() => { copyButton.textContent = 'Copy'; }, 2000);
+  });
 }
 
 const prefersReducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
