@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#edf2f5">
+  <meta name="description" content="FACET fits a single image with movable planar neural components that support geometric editing, simulation, and ray-traced 3D composition.">
+  <meta property="og:title" content="FACET — Ray-Traceable Local Implicit Neural Representations for Editable Images">
+  <meta property="og:description" content="From a single image to editable, ray-traceable geometry.">
+  <title>FACET — Ray-Traceable Local Implicit Neural Representations for Editable Images</title>
+  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <script src="animation.js" defer></script>
+  <script src="media.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#overview">Skip to content</a>
+  <header class="navigation" id="top">
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span> FACET</a>
+    <nav aria-label="Main navigation">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#applications">Applications</a>
+      <a href="#results">Results</a>
+    </nav>
+    <a class="nav-code" href="https://github.com/rtobiasz/FACET">GitHub</a>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="project-title">
+      <div class="hero-copy">
+        <p class="hero-expansion">Flat Anisotropic Components for Editing and Tracing</p>
+        <h1 id="project-title">
+          <span class="hero-wordmark brand-type" role="img" aria-label="FACET">
+            <img class="wordmark-poster" src="assets/facet-splat-wordmark.png" width="1040" height="368" alt="" fetchpriority="high">
+            <canvas id="facet-canvas" aria-hidden="true"></canvas>
+          </span>
+          <span class="full-title">Ray-Traceable Local Implicit Neural<br class="desktop-break"> Representations for Editable Images</span>
+        </h1>
+        <ul class="authors" aria-label="Authors">
+          <li><a href="https://scholar.google.com/citations?user=DGiaI64AAAAJ">Rafał Tobiasz<sup>1,3</sup></a></li>
+          <li><a href="https://grzegorzwilczynski.com">Grzegorz Wilczyński<sup>1,3</sup></a></li>
+          <li><a href="https://github.com/MikolajZielinski">Mikołaj Zieliński<sup>1,2,4</sup></a></li>
+          <li><a href="https://scholar.google.com/citations?user=ef2YKtsAAAAJ&amp;hl=pl&amp;oi=sra">Krzysztof Byrski<sup>1</sup></a></li>
+          <li><a href="https://scholar.google.com/citations?user=3XvUbbMAAAAJ&amp;hl=en">Dominik Belter<sup>2</sup></a></li>
+          <li><a href="https://scholar.google.com/citations?user=0kp0MbgAAAAJ&amp;hl=en">Przemysław Spurek<sup>1,3</sup></a></li>
+        </ul>
+        <ul class="affiliations" aria-label="Affiliations">
+          <li><a href="https://en.uj.edu.pl/en"><sup>1</sup> Jagiellonian University</a></li>
+          <li><a href="https://put.poznan.pl/en"><sup>2</sup> Poznań University of Technology</a></li>
+          <li><a href="https://www.ideas.edu.pl/en/"><sup>3</sup> IDEAS Research Institute</a></li>
+          <li><a href="https://ai.uj.edu.pl/en/start_en"><sup>4</sup> Jagiellonian Center for Artificial Intelligence</a></li>
+        </ul>
+        <div class="resources">
+          <!-- Replace this status with the arXiv link when the preprint goes live. -->
+          <span class="pill unavailable">arXiv <small>Coming soon</small></span>
+          <a class="pill primary" href="https://github.com/rtobiasz/FACET">Code <small>GitHub</small></a>
+          <a class="pill" href="#project-video">Video <small>Method</small></a>
+        </div>
+      </div>
+      <button id="hero-motion" type="button" hidden>Pause animation</button>
+    </section>
+    <section class="section" id="overview" aria-labelledby="overview-title">
+      <p class="section-label">Overview</p>
+      <div class="section-heading">
+        <h2 id="overview-title">A single image.<br> An editable scene.</h2>
+        <div><p>Fit a photo once, then bend it, drive it with a simulation, or lift it into depth. FACET stores appearance in the local coordinates of movable planar components, so fitted detail follows the geometry.</p>
+        <p>After lifting, camera rays and secondary rays query the same appearance field. Lights, mirrors, and glass can interact with the fitted image in the same scene.</p></div>
+      </div>
+      <section class="project-video" id="project-video" aria-labelledby="project-video-title">
+        <h3 id="project-video-title">Method video</h3>
+        <iframe data-src="https://www.youtube-nocookie.com/embed/BQYnGjL5MgU" title="FACET method video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen hidden></iframe>
+        <a href="https://www.youtube.com/watch?v=BQYnGjL5MgU">Watch on YouTube</a>
+      </section>
+      <section class="behind-teaser" aria-labelledby="teaser-title">
+        <p class="section-label">Behind the teaser</p>
+        <h3 id="teaser-title">How we built the teaser scene</h3>
+        <p>We start with a single image of Venice and lift it into 3D using Depth Pro. We move the camera, slide in a mirror, restyle the right half after <em>The Starry Night</em>, and add a ray-traced glass sphere.</p>
+        <video id="teaser-build" src="media/hero/teaser_build_up.mp4" poster="media/hero/teaser_build_up.jpg" width="1920" height="576" muted loop playsinline controls preload="none" aria-labelledby="teaser-title"></video>
+      </section>
+    </section>
+    <section class="section" id="method" aria-labelledby="method-title">
+      <p class="section-label">Method</p>
+      <div class="section-heading">
+        <h2 id="method-title">Appearance follows<br> the component.</h2>
+        <p>Every component carries a local frame and a compact descriptor. One shared neural decoder maps each ray hit in that frame to color and opacity.</p>
+      </div>
+      <figure class="method-figure">
+        <a href="assets/method.webp" aria-label="Open the full-size FACET method diagram"><img src="assets/method.webp" width="1655" height="718" loading="lazy" alt="FACET fits oriented planar components with a shared decoder, then reuses them for deformations, style transfer, depth lifting, and ray tracing."></a>
+      </figure>
+      <div class="method-columns">
+        <article><h3>Fit in local coordinates</h3><p>Optimize the planar geometry, descriptors, and shared decoder against the input image. Composite the decoded hits in ray order.</p></article>
+        <article><h3>Transport the frames</h3><p>Move the centers and transport the local axes and scales through each warp. The same decoder preserves the fitted pattern as components deform.</p></article>
+        <article><h3>Lift and trace</h3><p>Use an external depth map to place the components in 3D. Added lights and objects produce shadows, reflections, refractions, and caustics.</p></article>
+      </div>
+    </section>
+    <section class="section" id="applications" aria-labelledby="applications-title">
+      <p class="section-label">Applications</p>
+      <div class="section-heading">
+        <h2 id="applications-title">Edit, simulate,<br> and lift.</h2>
+        <p>Explore the same edits across methods, then see how lifted images respond to lights, a thin lens, and inserted objects.</p>
+      </div>
+      <details class="gallery" open>
+        <summary><h3>Simulation and stylization</h3><span class="disclosure" aria-hidden="true"></span></summary>
+        <div class="gallery-grid">
+          <article class="clip-group">
+            <div class="clip-heading"><h4>The Great Wave · cloth</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/editing/cloth_great_wave_facet.mp4" poster="media/editing/cloth_great_wave_facet.jpg" width="1920" height="1440" muted loop playsinline controls preload="none" aria-label="The Great Wave · cloth, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>MiraGe</figcaption>
+                <video src="media/editing/cloth_great_wave_mirage.mp4" poster="media/editing/cloth_great_wave_mirage.jpg" width="1920" height="1440" muted loop playsinline controls preload="none" aria-label="The Great Wave · cloth, MiraGe"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">Both representations follow the same simulated cloth mesh and camera.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Lady with an Ermine · flag</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/editing/flag_lady_with_an_ermine_facet.mp4" poster="media/editing/flag_lady_with_an_ermine_facet.jpg" width="1920" height="1440" muted loop playsinline controls preload="none" aria-label="Lady with an Ermine · flag, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>MiraGe</figcaption>
+                <video src="media/editing/flag_lady_with_an_ermine_mirage.mp4" poster="media/editing/flag_lady_with_an_ermine_mirage.jpg" width="1920" height="1440" muted loop playsinline controls preload="none" aria-label="Lady with an Ermine · flag, MiraGe"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>The Great Wave · origami</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/editing/origami_great_wave.mp4" poster="media/editing/origami_great_wave.jpg" width="1440" height="1080" muted loop playsinline controls preload="none" aria-label="The Great Wave · origami"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">A prescribed fold carries the fitted image along the paper.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Paper plane</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/editing/origami_paper_plane.mp4" poster="media/editing/origami_paper_plane.jpg" width="1440" height="1080" muted loop playsinline controls preload="none" aria-label="Paper plane"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">The fitted image follows an origami fold into a paper plane.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Tübingen · style and sand</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/editing/style_then_sand_tuebingen.mp4" poster="media/editing/style_then_sand_tuebingen.jpg" width="768" height="576" muted loop playsinline controls preload="none" aria-label="Tübingen · style and sand"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">The image is restyled after The Starry Night, then animated with a sand simulation.</p>
+          </article>
+        </div>
+      </details>
+      <details class="gallery">
+        <summary><h3>Ray-traced composition</h3><span class="disclosure" aria-hidden="true"></span></summary>
+        <div class="gallery-grid">
+          <article class="clip-group clip-wide">
+            <div class="clip-heading"><h4>Moving light</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>Flat billboard</figcaption>
+                <video src="media/lifting/checkerboard_moving_light_flat_billboard.mp4" poster="media/lifting/checkerboard_moving_light_flat_billboard.jpg" width="1024" height="768" muted loop playsinline controls preload="none" aria-label="Moving light, Flat billboard"></video>
+              </figure>
+              <figure>
+                <figcaption>Lifted FACET</figcaption>
+                <video src="media/lifting/checkerboard_moving_light.mp4" poster="media/lifting/checkerboard_moving_light.jpg" width="1024" height="768" muted loop playsinline controls preload="none" aria-label="Moving light, Lifted FACET"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">A new light sweeps across the same image kept flat and lifted with Depth Pro.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Glass spheres</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/lifting/checkerboard_glass_balls.mp4" poster="media/lifting/checkerboard_glass_balls.jpg" width="1024" height="768" muted loop playsinline controls preload="none" aria-label="Glass spheres"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">Ray-traced glass refracts the lifted scene.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Rack focus</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/lifting/checkerboard_rack_focus.mp4" poster="media/lifting/checkerboard_rack_focus.jpg" width="1024" height="768" muted loop playsinline controls preload="none" aria-label="Rack focus"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">A thin-lens camera sweeps the focus across the lifted scene.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>The Ambassadors</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <video src="media/lifting/ambassadors_mirror.mp4" poster="media/lifting/ambassadors_mirror.jpg" width="1200" height="900" muted loop playsinline controls preload="none" aria-label="The Ambassadors"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">A planar mirror reveals the anamorphic skull in the depth-lifted painting.</p>
+          </article>
+        </div>
+      </details>
+      <details class="gallery">
+        <summary><h3>Novel views from a single image</h3><span class="disclosure" aria-hidden="true"></span></summary>
+        <div class="gallery-grid">
+          <p class="gallery-intro">FACET and GaINeR share a source view, depth map, and camera path for each comparison.</p>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Hotdog · ground-truth depth</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/lifting/flythrough_hotdog_gt_facet.mp4" poster="media/lifting/flythrough_hotdog_gt_facet.jpg" width="800" height="800" muted loop playsinline controls preload="none" aria-label="Hotdog · ground-truth depth, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/lifting/flythrough_hotdog_gt_gainer.mp4" poster="media/lifting/flythrough_hotdog_gt_gainer.jpg" width="800" height="800" muted loop playsinline controls preload="none" aria-label="Hotdog · ground-truth depth, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Hotdog · Depth Pro</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/lifting/flythrough_hotdog_pro_facet.mp4" poster="media/lifting/flythrough_hotdog_pro_facet.jpg" width="800" height="800" muted loop playsinline controls preload="none" aria-label="Hotdog · Depth Pro, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/lifting/flythrough_hotdog_pro_gainer.mp4" poster="media/lifting/flythrough_hotdog_pro_gainer.jpg" width="800" height="800" muted loop playsinline controls preload="none" aria-label="Hotdog · Depth Pro, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>DTU scan 114 · ground-truth depth</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/lifting/flythrough_dtu_gt_facet.mp4" poster="media/lifting/flythrough_dtu_gt_facet.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="DTU scan 114 · ground-truth depth, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/lifting/flythrough_dtu_gt_gainer.mp4" poster="media/lifting/flythrough_dtu_gt_gainer.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="DTU scan 114 · ground-truth depth, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>DTU scan 114 · Depth Pro</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/lifting/flythrough_dtu_pro_facet.mp4" poster="media/lifting/flythrough_dtu_pro_facet.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="DTU scan 114 · Depth Pro, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/lifting/flythrough_dtu_pro_gainer.mp4" poster="media/lifting/flythrough_dtu_pro_gainer.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="DTU scan 114 · Depth Pro, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+        </div>
+      </details>
+      <details class="gallery">
+        <summary><h3>Geometric editing</h3><span class="disclosure" aria-hidden="true"></span></summary>
+        <div class="gallery-grid">
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Swirl</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>Centers only</figcaption>
+                <video src="media/editing/warp_kodim01_swirl_centers_only.mp4" poster="media/editing/warp_kodim01_swirl_centers_only.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Swirl, Centers only"></video>
+              </figure>
+              <figure>
+                <figcaption>Frame transport</figcaption>
+                <video src="media/editing/warp_kodim01_swirl_frame_transport.mp4" poster="media/editing/warp_kodim01_swirl_frame_transport.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Swirl, Frame transport"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">The local frames rotate with the swirl, carrying fitted detail through the turn.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Stretch</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>Centers only</figcaption>
+                <video src="media/editing/warp_kodim05_stretch_centers_only.mp4" poster="media/editing/warp_kodim05_stretch_centers_only.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Stretch, Centers only"></video>
+              </figure>
+              <figure>
+                <figcaption>Frame transport</figcaption>
+                <video src="media/editing/warp_kodim05_stretch_frame_transport.mp4" poster="media/editing/warp_kodim05_stretch_frame_transport.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Stretch, Frame transport"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">Transporting the frames scales the component supports as the image stretches.</p>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Smudge · hats</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/editing/smudge_hats_facet.mp4" poster="media/editing/smudge_hats_facet.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · hats, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/editing/smudge_hats_gainer.mp4" poster="media/editing/smudge_hats_gainer.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · hats, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Smudge · sky swirls</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/editing/smudge_hats_sky_swirls_facet.mp4" poster="media/editing/smudge_hats_sky_swirls_facet.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · sky swirls, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/editing/smudge_hats_sky_swirls_gainer.mp4" poster="media/editing/smudge_hats_sky_swirls_gainer.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · sky swirls, GaINeR"></video>
+              </figure>
+            </div>
+          </article>
+          <article class="clip-group">
+            <div class="clip-heading"><h4>Smudge · speed streaks</h4><button class="clip-toggle" type="button" hidden>Play</button></div>
+            <div class="clip-grid">
+              <figure>
+                <figcaption>FACET</figcaption>
+                <video src="media/editing/smudge_plane_speed_streaks_facet.mp4" poster="media/editing/smudge_plane_speed_streaks_facet.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · speed streaks, FACET"></video>
+              </figure>
+              <figure>
+                <figcaption>GaINeR</figcaption>
+                <video src="media/editing/smudge_plane_speed_streaks_gainer.mp4" poster="media/editing/smudge_plane_speed_streaks_gainer.jpg" width="768" height="512" muted loop playsinline controls preload="none" aria-label="Smudge · speed streaks, GaINeR"></video>
+              </figure>
+            </div>
+            <p class="clip-caption">Both methods use the same brush strokes.</p>
+          </article>
+        </div>
+      </details>
+    </section>
+    <section class="section" id="results" aria-labelledby="results-title">
+      <p class="section-label">Results</p>
+      <div class="section-heading">
+        <h2 id="results-title">Reconstruction quality.</h2>
+        <p>FACET reaches higher mean PSNR with a smaller inference state than the two closest editing-oriented baselines in the reconstruction experiments.</p>
+      </div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Scrollable image reconstruction results">
+        <table>
+          <caption>Mean float PSNR over three seeds. Memory is the uncompressed inference state in MB (Kodak-24 / DIV2K-100).</caption>
+          <thead>
+            <tr><th scope="col">Method</th><th scope="col">Kodak-24<br>PSNR (dB)</th><th scope="col">DIV2K-100<br>PSNR (dB)</th><th scope="col">Memory (MB)</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">MiraGe</th><td>71.33</td><td>65.66</td><td>212.7 / 258.9</td></tr>
+            <tr><th scope="row">GaINeR</th><td>72.97</td><td>61.34</td><td>44.1 / 44.1</td></tr>
+            <tr class="ours"><th scope="row">FACET (ours)</th><td>81.35</td><td>70.29</td><td>28.0 / 28.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="section" id="abstract" aria-labelledby="abstract-title">
+      <div class="section-heading">
+        <h2 id="abstract-title">Abstract</h2>
+        <p>FACET is an editable image representation that pairs oriented planar components with continuous neural appearance. A decoder shared across components predicts color and opacity from local coordinates and compact descriptors. Basing appearance in each component’s frame lets detail move with the surface through planar edits, mesh-driven simulation, and depth-guided lifting. The lifted components can be queried by reflected and refracted rays alongside conventional mesh objects. On Kodak-24 and DIV2K-100, FACET improves reconstruction quality and reduces inference size compared with the evaluated editing-oriented baselines. Controlled edits and novel views further demonstrate appearance preservation.</p>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true"></span> FACET</a>
+    <details class="credits">
+      <summary>Media credits</summary>
+      <p>The Venice image is AI-generated. Paintings include <em>The Great Wave off Kanagawa</em> by Katsushika Hokusai, <em>Lady with an Ermine</em> by Leonardo da Vinci, <em>The Ambassadors</em> by Hans Holbein the Younger, and <em>The Starry Night</em> by Vincent van Gogh.</p>
+      <p>Evaluation imagery comes from <a href="http://r0k.us/graphics/kodak/">Kodak</a>, <a href="https://www.matthewtancik.com/nerf">NeRF-Synthetic</a>, and the <a href="https://roboimagedata.compute.dtu.dk/">DTU MVS dataset</a>.</p>
+    </details>
+    <a href="#top">Back to top</a>
+  </footer>
+</body>
+</html>
