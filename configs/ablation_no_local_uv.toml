@@ -1,0 +1,7 @@
+# Ablation "without local uv" (paper Table 2; the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+disable_component = ["uv"]
+
+[expected]
+psnr_mean_db = 73.64   # full model 81.49 at seed 0

@@ -1,0 +1,4 @@
+{"image": "kodim03.png", "label": "Finger-paint smudge: three brush strokes", "warp": {"type": "smudge", "strokes": [
+  {"path": [[175, 190], [250, 250], [330, 330], [420, 360]], "radius": 42, "strength": 0.85},
+  {"path": [[390, 250], [420, 180], [480, 120], [580, 90]], "radius": 38, "strength": 0.85},
+  {"path": [[605, 315], [640, 350], [680, 330], [720, 370], [700, 430]], "radius": 30, "strength": 0.85}]}}

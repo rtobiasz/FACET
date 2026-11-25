@@ -1,0 +1,5 @@
+#pragma once
+#ifndef FACET_HIT_BUFFER_SIZE
+#define FACET_HIT_BUFFER_SIZE 16
+#endif
+#define HIT_BUFFER_SIZE FACET_HIT_BUFFER_SIZE

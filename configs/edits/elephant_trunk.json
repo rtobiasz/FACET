@@ -1,0 +1,1 @@
+{"image": "edit3_before.png", "label": "Elephant: raised trunk", "warp": {"type": "joint", "pivot": [250, 215], "direction": [-0.82, -0.57], "falloff": 150, "width": 50, "angle": 35}}

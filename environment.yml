@@ -1,0 +1,10 @@
+name: facet
+channels:
+  - nvidia/label/cuda-12.4.1
+  - conda-forge
+dependencies:
+  - python=3.11
+  - cuda-toolkit=12.4.1
+  - pip
+  - pip:
+      - -r requirements.txt

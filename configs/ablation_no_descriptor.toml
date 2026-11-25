@@ -1,0 +1,7 @@
+# Ablation "without descriptor" (paper Table 2; the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+active_conditioning_dimensions = 0
+
+[expected]
+psnr_mean_db = 80.14   # full model 81.49 at seed 0

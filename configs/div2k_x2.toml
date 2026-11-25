@@ -1,0 +1,10 @@
+# DIV2K-100 x2 reconstruction (paper Table 1): the 100 validation images downsampled by two,
+# data/div2k/DIV2K_valid_LR_bicubic/X2/0801x2.png ... 0900x2.png, seeds 0-2. Only the scale bounds differ
+# from configs/kodak.toml (about one pixel at width ~1020).
+[train]
+maximum_scale_fraction = 0.0020
+minimum_scale = 0.0010
+
+[expected]
+psnr_mean_db = 70.29     # three seeds (70.32 / 70.26 / 70.27); tolerance +-0.1 dB
+train_minutes_rtx4090 = 20.3

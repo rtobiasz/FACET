@@ -1,0 +1,18 @@
+# Kodak-24 reconstruction (paper Table 1). Every value equals the default of scripts/train.py; it is
+# listed so this file documents the full recipe. Images: data/kodak/kodim01.png ... kodim24.png, seeds 0-2.
+# Constant settings not exposed as options (initial opacity 0.01, neutral appearance initialization,
+# decoder warm-up from iteration 250 over 500 iterations, no densification, learning-rate schedules) are
+# in facet/training/config.py (LearningConfig) and facet/training/fit.py.
+[train]
+primitive_count = 500000
+iterations = 30000
+active_conditioning_dimensions = 4
+maximum_scale_fraction = 0.0025   # scale cap, horizontal [-1, 1] image frame (about one pixel at width 768)
+minimum_scale = 0.00125           # half the cap
+scale_regularization = 0.0005
+restore_clamped_gradient = true
+diagnostic_frequency = 100        # best checkpoint = highest post-step PSNR at this cadence
+
+[expected]
+psnr_mean_db = 81.35     # three seeds (81.49 / 81.41 / 81.15); tolerance +-0.3 dB
+train_minutes_rtx4090 = 15.5   # with the optimized kernel (see README); the reference kernel takes longer

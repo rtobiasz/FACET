@@ -1,0 +1,22 @@
+# Geometric edit "elephant_trunk" (paper Fig. 10; the appendix's geometric-edits figure): an RGBA object image fitted with
+# a random background (so opacity is learned), moved by the warp in configs/edits/elephant_trunk.json with frame
+# transport, rendered over white. Image: edit3_before.png (the RGBA edit images used by GaINeR; not redistributed).
+[train]
+active_conditioning_dimensions = 0
+alpha_mode = "composite"
+background_rgb = [0, 0, 0]
+random_background = true
+
+[mask]
+threshold = 128
+use_alpha = true
+
+[states]
+spec = "configs/edits/elephant_trunk.json"
+frames = 60
+
+[render_edit]
+transport_deformation = true
+resolution_scale = 1
+fps = 30
+background_rgb = [1, 1, 1]

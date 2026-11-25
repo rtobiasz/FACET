@@ -1,0 +1,7 @@
+# Ablation "without generalized shape" (the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+disable_component = ["kappa"]
+
+[expected]
+psnr_mean_db = 81.45   # full model 81.49 at seed 0

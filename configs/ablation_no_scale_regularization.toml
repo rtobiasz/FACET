@@ -1,0 +1,7 @@
+# Ablation "without scale regularization" (the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+scale_regularization = 0
+
+[expected]
+psnr_mean_db = 81.43   # full model 81.49 at seed 0

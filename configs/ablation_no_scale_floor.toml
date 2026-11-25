@@ -1,0 +1,7 @@
+# Ablation "without scale floor" (the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+minimum_scale = 0.0001
+
+[expected]
+psnr_mean_db = 80.60   # full model 81.49 at seed 0

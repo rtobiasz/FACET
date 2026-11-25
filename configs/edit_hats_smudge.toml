@@ -1,0 +1,10 @@
+# Smudge showcase "hats_smudge" (paper Fig. 6) on the Kodak checkpoint of kodim03
+# (configs/kodak.toml, seed 0): all components move with the brush warp, frames are transported.
+[states]
+spec = "configs/edits/hats_smudge.json"
+frames = 60
+selection = "all"
+
+[render_edit]
+transport_deformation = true
+resolution_scale = 1

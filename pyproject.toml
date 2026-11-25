@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "facet"
+version = "1.0.0"
+description = "FACET: ray-traceable local implicit neural representations for editable images"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { file = "LICENSE" }
+dependencies = [
+    "torch>=2.4",
+    "torchvision",
+    "numpy<2",
+    "scipy",
+    "Pillow",
+    "torchmetrics",
+    "open_clip_torch",
+    "plyfile",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+# Scoring lifted views (scripts/lift.py evaluate)
+lift = ["lpips", "scikit-image", "opencv-python-headless"]
+# MPM (needs a clone of taichi_elements, see the README) and cloth simulation
+physics = ["taichi==1.7.4", "warp-lang"]
+# Textured depth-mesh baseline
+mesh = ["open3d-cpu"]
+
+[tool.setuptools.packages.find]
+include = ["facet*"]
+
+[tool.setuptools.package-data]
+"facet.renderer" = ["native/*"]

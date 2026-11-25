@@ -1,0 +1,30 @@
+# Sand MPM: the apple collapsing (the appendix's MPM figure, bottom). The RGBA apple is fitted like
+# configs/edit_*.toml [train]; selection = alpha mask with threshold 1. Sand plastic flow is transported
+# with the deformation estimated from neighbouring centres (paper Sec. 3.2).
+[train]
+active_conditioning_dimensions = 0
+alpha_mode = "composite"
+background_rgb = [0, 0, 0]
+random_background = true
+
+[mask]
+threshold = 1
+use_alpha = true
+
+[simulate]
+steps = 99
+dt = 0.01
+resolution = 128
+material = "sand"
+floor_height = 0.35
+elasticity_scale = 2
+arch = "cpu"
+isolate_selection = true
+save_deformation_gradient = true
+
+[render_edit]
+transport_deformation = true
+deformation_source = "neighbours"
+resolution_scale = 1
+fps = 30
+background_rgb = [1, 1, 1]

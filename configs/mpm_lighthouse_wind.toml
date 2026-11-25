@@ -1,0 +1,34 @@
+# Elastic MPM: the lighthouse in wind (the appendix's MPM figure, top), on the original RGBA lighthouse
+# image fitted with the edit recipe below. The selection mask is the object's alpha mask (scripts/edit.py mask, threshold 128), dilated by 4
+# pixels; its domain is [-1, 1] x [-H/W, H/W] of the image (pass --selection_mask_domain -1 1 -h h).
+# The MPM solver is taichi_elements (clone it and pass --taichi_elements_path).
+[train]
+active_conditioning_dimensions = 0
+alpha_mode = "composite"
+background_rgb = [0, 0, 0]
+random_background = true
+
+[mask]
+threshold = 128
+use_alpha = true
+
+[simulate]
+steps = 99
+dt = 0.01
+resolution = 64
+elasticity_scale = 6
+scale = 0.5
+offset = [0.25, 0.2]
+material = "elastic"
+collider = [[0, 0.21, 0, 1, "sticky"]]
+horizontal_force_cosine = 30
+selection_mask_dilation = 4
+isolate_selection = true
+arch = "cpu"
+save_deformation_gradient = true
+
+[render_edit]
+transport_deformation = true
+resolution_scale = 1
+fps = 30
+background_rgb = [1, 1, 1]

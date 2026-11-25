@@ -1,0 +1,16 @@
+# DIV2K 8x super-resolution (paper Table 4; the appendix's super-resolution table and figure). Fit the x8 low-resolution image through
+# the known antialiased bicubic degradation (rendered at 2x the LR sampling, downscaled, loss at LR),
+# then render at 8x and score against the HR image. 23 images: 0801 0806 0811 0816 0821 0826 0831 0836
+# 0841 0846 0851 0856 0861 0863 0866 0871 0876 0881 0886 0887 0891 0896 0900.
+[train]
+iterations = 3000
+maximum_scale_fraction = 0.0100
+minimum_scale = 0.0025
+sr_training_scale = 2
+lean_outputs = true
+
+[super_resolve]
+scale = 8
+
+[expected]
+psnr_mean_db = 23.85     # SSIM .658, LPIPS .489; tolerance +-0.05 dB

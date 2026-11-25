@@ -1,0 +1,7 @@
+# Ablation "without learned angle" (the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+orientation = "fixed_identity"
+
+[expected]
+psnr_mean_db = 80.98   # full model 81.49 at seed 0

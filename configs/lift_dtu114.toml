@@ -1,0 +1,20 @@
+# Depth-guided lifting, DTU scan 114, source view 25, targets 24 and 26 (paper Table 3 and Fig. 7; the appendix's lifting tables).
+# Fit the source view with a random background, lift it with ground-truth (filled) or Depth Pro depth
+# and render the held-out target views of the scene directory (eval_path.json) over white and over black;
+# scripts/lift.py evaluate then scores them. Build the renderer with the source-camera index-order key
+# (README: build/renderer_lift) and select it with FACET_RENDERER_DIRECTORY.
+[train]
+alpha_mode = "composite"
+background_rgb = [1, 1, 1]
+random_background_opaque = true
+
+[lift]
+sampling = "floor"
+transport = "jacobian"
+invalid = "deactivate"
+freeze-view-direction = true
+edge-max-slant = 85
+
+[lift_evaluate]
+mask-threshold = 10
+exclude-index = 0

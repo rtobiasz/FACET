@@ -1,0 +1,10 @@
+--extra-index-url https://download.pytorch.org/whl/cu124
+torch==2.6.0+cu124
+torchvision==0.21.0+cu124
+numpy==1.26.4
+scipy==1.17.1
+Pillow==12.1.1
+torchmetrics==1.8.2
+open_clip_torch==3.3.0
+plyfile==0.8.1
+tqdm==4.67.1

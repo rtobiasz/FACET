@@ -1,0 +1,9 @@
+# Capacity curve (paper Fig. 9; the appendix's capacity table): Kodak-24, seed 0, 250k components;
+# the scale cap follows 0.0025 * sqrt(500000 / N), the floor is half of it.
+[train]
+primitive_count = 250000
+maximum_scale_fraction = 0.00354
+minimum_scale = 0.001770
+
+[expected]
+psnr_mean_db = 77.60

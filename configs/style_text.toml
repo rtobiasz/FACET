@@ -1,0 +1,23 @@
+# Text-conditioned stylization (the appendix's additional applications): four-image text-style set (coco_17 "Fire", coco_11
+# "Starry Night by Vincent van Gogh", coco_8 "Mosaic", coco_sailboat "Scream by Edvard Munch").
+[train]
+active_conditioning_dimensions = 0
+
+[stylize]
+steps = 3000
+save_every = 500
+num_crops = 64
+crop_size = 128
+seed = 120
+with_base_rgb = true
+model_lr = 0.005
+model_reg_weight = 0.0001
+lambda_dir = 20
+lambda_patch = 90
+lambda_content = 1.5
+patch_threshold = 0.7
+save_styled_checkpoint = true
+
+[expected]
+clip_style_similarity_l14 = 26.2
+content_ssim = 0.50

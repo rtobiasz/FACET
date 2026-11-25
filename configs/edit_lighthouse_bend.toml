@@ -1,0 +1,23 @@
+# Geometric edit "lighthouse_bend" (the appendix's geometric-edits figure): an RGBA object image fitted with
+# a random background (so opacity is learned), moved by the warp in configs/edits/lighthouse_bend.json with frame
+# transport, rendered over white. Image: edit15_before.png (the RGBA edit images used by GaINeR; not redistributed).
+# Its RGBA input keeps only the largest alpha component (two detached 31- and 25-pixel alpha fragments
+# removed, RGB unchanged).
+[train]
+alpha_mode = "composite"
+background_rgb = [0, 0, 0]
+random_background = true
+
+[mask]
+threshold = 128
+use_alpha = true
+
+[states]
+spec = "configs/edits/lighthouse_bend.json"
+frames = 60
+
+[render_edit]
+transport_deformation = true
+resolution_scale = 1
+fps = 30
+background_rgb = [1, 1, 1]

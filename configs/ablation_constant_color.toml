@@ -1,0 +1,8 @@
+# Ablation "constant per-primitive color" (paper Table 2; the appendix's full ablation table): Kodak-24, seed 0,
+# configs/kodak.toml with one change.
+[train]
+appearance = "base_colour"
+active_conditioning_dimensions = 0
+
+[expected]
+psnr_mean_db = 72.19   # full model 81.49 at seed 0
